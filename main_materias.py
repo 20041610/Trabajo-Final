@@ -1,5 +1,4 @@
 from clase_academia import Academia
-import re
 objeto_academia2 = Academia()
 
 
