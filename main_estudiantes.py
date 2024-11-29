@@ -138,7 +138,7 @@ def main():
                                     if(nombre_ingresado):
                                         break
                                     
-                            modificar = input("Modificar apellido? s/n: ")
+                            modificar = input("Modificar apellido? s/n: ").lower().strip()
                             if(modificar !="s"):
                                 apellido_ingresado = estudiante_encontrado[2]
                             else:
