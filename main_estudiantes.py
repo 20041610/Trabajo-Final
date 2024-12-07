@@ -1,325 +1,337 @@
-from clase_academia import Academia
 from datetime import datetime
-objeto_academia = Academia()
-
+from  academia import BaseDeDatos
+from academia import Estudiantes
+from academia import Materias
+base_de_datos = BaseDeDatos() #Instancia de la clase BaseDeDatos
+Estudiantes = Estudiantes(base_de_datos) #Instancia de la clase Estudiantes
+Materias = Materias(base_de_datos) #Instancia de la clase Materias
 menu = '''
-                                                    *****************************************
-                                                    *             Menu Carrera              *
-                                                    *****************************************
-                                                    *                                       *
-                                                    * 1) Insertar Estudiantes               *
-                                                    * 2) Eliminar Estudiantes               *
-                                                    * 3) Modificar Estudiantes              *
-                                                    * 4) Ver los datos de cada estudiante   *
-                                                    * 5) Ver lista de materias              *
-                                                    * 6) Ver materias y sus estudiantes     *
-                                                    * 7) Insertar estudiantes en materias   *
-                                                    * 8) Ver estudiantes ordenados por...   *
-                                                    * 9) Salir                              *
-                                                    *****************************************
+                                                    *********************************************
+                                                    *              Menu de inscripción          *
+                                                    *********************************************
+                                                    *                                           *
+                                                    * 1) Insertar Estudiantes                   *
+                                                    * 2) Dar de baja de la carrera a Estudiantes*
+                                                    * 3) Modificar Estudiantes                  *
+                                                    * 4) Ver los datos de cada estudiante       *
+                                                    * 5) Insertar estudiantes en materias       *
+                                                    * 6) Ver materias y sus estudiantes         *
+                                                    * 7) Dar de baja estudiantes en materias   *
+                                                    * 8) Ver estudiantes ordenados por...       *
+                                                    * 9) Estudiantes dados de baja              *
+                                                    * 10) Salir                                 *
+                                                    *********************************************
 
 '''
 
 def main():
     opcion = 0
-    while(not opcion == 9):
+    while(not opcion == 10):
         print(menu)
         while True:
             try:
                 opcion= int(input("Ingrese una opcion del menu:"))
                 break
             except ValueError:
-                print("Ingrese una opcion del 1 al 9")
+                print("Ingrese una opcion del 1 al 10")
 
         if(opcion==1):
             insertar_estudiantes()
         if(opcion == 2):
-            borrar_estudiantes()
+            dar_baja_estudiantes()
         if(opcion == 3):
             modificar_estudiantes()
         if  (opcion == 4):
             ver_estudiantes()
-        if(opcion ==5):
-            ver_materias()
-        if(opcion==6):
-            ver_materias_con_estudiantes()
-        if(opcion ==7):
+            input("ENTER para continuar")
+        if(opcion==5):
             insertar_estudiantes_en_materias()
+        if(opcion ==6):
+            ver_materias_con_estudiantes()
+            input("ENTER para continuar")        
+        if(opcion == 7):
+            dar_baja_estudiante_en_materia()
         if(opcion == 8):
             menu_ordenamiento()
         if(opcion == 9):
+            lectura_estudiantes_de_baja()
+            input("ENTER para continuar")
+        if(opcion == 10):
             print("Saliendo del programa.")
 
 def insertar_estudiantes():
-    print("Insertar Estudiantes")
-    while(True):
-        nombre = input("Ingrese el/los nombres: ")
-        nombre_ingresado = objeto_academia.validar_nombre(nombre)
-        if(nombre_ingresado):
-            print(f"El nombre {nombre} fue ingresado.")
-            break
-    while(True):
-        apellido = input("Ingrese el/los apellido/s de el/la estudiante: ")
-        apellido_ingresado = objeto_academia.validar_apellido(apellido)
-        if(apellido_ingresado):
-            print(f"El/los apellido/s ingresado/s son {apellido} ")
-            break
-    while(True):
-        fecha_nacimiento = input("Ingrese su fecha de nacimiento en formato DD-MM-YYYY: ")
-        fecha_ingresada = objeto_academia.validar_fecha(fecha_nacimiento)
-        if(fecha_ingresada):
-            print(f"La fecha {fecha_nacimiento} fue ingresada.")
-            break
+    # Función general para captura de datos
+    def insertar_datos(mensaje, metodo_validacion):
+        while (True):
+            dato = input(mensaje).strip().lower()
+            dato_validado = metodo_validacion(dato)
+            if(dato_validado):
+                return dato_validado
+                
 
-    while(True):
-        dni = input("Ingrese su DNI (Solo numeros): ")
-        dni_ingresado = objeto_academia.validar_dni_estudiante(dni)
-        if(dni_ingresado):
-            print(f"El dni {dni} fue ingresado.")
-            break
+    nombre = insertar_datos("Ingrese el/los nombres de el/la estudiante: ", Estudiantes.validar_string)
+    apellido = insertar_datos("Ingrese el/los apellido/s de el/la estudiante: ", Estudiantes.validar_string)
+    fecha_nacimiento = insertar_datos("Ingrese su fecha de nacimiento en formato AAAA-MM-DD: ", Estudiantes.validar_fecha)
+    dni = insertar_datos("Ingrese su DNI (Solo numeros): ", Estudiantes.validar_dni_estudiante)
+    telefono = insertar_datos("Ingrese el telefono de el/la estudiante: ", Estudiantes.validar_telefono)
+    domicilio = insertar_datos("Ingrese el nombre del domicilio de el/la estudiante: ", Estudiantes.validar_domicilio).strip()
+    numero_domicilio = "S/N"
+    insertar = input("Ingresar numero de domicilio? s/n: ").strip().lower()
+    if(insertar == "s"):
+        numero_domicilio = insertar_datos("Ingrese el numero del domicilio de el/la estudiante: ", Estudiantes.validar_numero_domicilio)
 
-    while(True):
-        telefono = input("Ingrese el  telefono de el/la estudiante: ")
-        telefono_ingresado = objeto_academia.validar_telefono(telefono)
-        if(telefono_ingresado):
-            print(f"El telefono {telefono} ingresado.")
-            break
+    print("Datos ingresados")
+    print(f"Nombre/s: {nombre}")
+    print(f"Apellido/s: {apellido}")
+    print(f"Fecha de nacimiento: {fecha_nacimiento}")
+    print(f"Dni: {dni}")
+    print(f"Telefono: {telefono}")
+    print(f"Domicilio: {domicilio} {numero_domicilio}")
+    input("ENTER para continuar")
+    Estudiantes.insertar_estudiantes(nombre,apellido,fecha_nacimiento,dni,telefono,domicilio,numero_domicilio)
 
-    while True:
-        domicilio = input("Ingrese el domicilio de el/la estudiante: ")
-        domicilio_ingresado = objeto_academia.validar_domicilio(domicilio)
-        if(domicilio_ingresado):
-            print(f"El domicilio {domicilio} fue ingresado.")
-            break
-    objeto_academia.insertar_datos(nombre_ingresado,apellido_ingresado,fecha_ingresada,dni_ingresado,telefono_ingresado,domicilio_ingresado)
-
-def borrar_estudiantes():
+def dar_baja_estudiantes():
     continuar = "s"
     while(continuar == "s"):
-        registros = objeto_academia.lectura_datos()
+        registros = Estudiantes.lectura_datos_estudiante()
         if(not registros):
-            print("No hay datos en la base de datos. Use la opcion 1 para insertar datos.")
+            print("Error.No hay estudiantes cargados en el sistema. Use la opcion 1 para insertarlos.")
             input("ENTER para continuar")
             break
         else:
-            print("Tabla de estudiantes disponibles")
-            print(f"ID de el/la estudiante || Nombre/s || Apellido/s || Fecha de Nacimiento || DNI || Telefono || Domicilio")
-            print("-" * 100)
-            for registro in registros:
-                print(f"{registro[0]}  || {registro[1]} || {registro[2]} || {registro[3]} || {registro[4]} || {registro[5]} || {registro[6]}")
-                print("-" * 100)
+            ver_estudiantes()
             try:
-                id_a_borrar = int(input("Ingrese el id de el/la estudiante a eliminar: "))
-                estudiante_encontrado = objeto_academia.lectura_especifica(id_a_borrar)
-                if(estudiante_encontrado):
-                    confirmar = input("Confirmar borrado ? s/n: ").lower().strip()
+                id_a_borrar = int(input("Ingrese el id de el/la estudiante a dar de baja: "))
+                estudiante_encontrado = Estudiantes.lectura_estudiante_especifico(id_a_borrar)
+                if(not estudiante_encontrado):
+                    print("Error. No hay estudiante con ese id.")
+
+                if(estudiante_encontrado and estudiante_encontrado[8] == 'Activo/a'):
+                    confirmar = input("Dar de baja ? s/n: ").lower().strip()
                     if(confirmar != "s"):
                         print("Cancelado.")
                     else:
-                        objeto_academia.borrar_datos(id_a_borrar)
-                        print(f"Se eliminó a {estudiante_encontrado[1] + ' ' + estudiante_encontrado[2]}")
-                else:
-                    print("Error. No hay estudiante con ese id.")
+                        Estudiantes.dar_baja_estudiantes(id_a_borrar)
+                        print(f"Se dió de baja a {estudiante_encontrado[1] + ' ' + estudiante_encontrado[2]}")
+
+                if(estudiante_encontrado and estudiante_encontrado[8] == 'Inactivo/a'):
+                    print("Error. Ya esta dado/a de baja.")
+                    
             except ValueError:
                 print("Error. Debe ingresar un numero entero.")
-            continuar = input("Seguir buscando y eliminando? s/n: ").lower().strip()
+            continuar = input("Seguir buscando y dando de baja? s/n: ").lower().strip()
 
 def modificar_estudiantes():
     print("Modificar estudiantes")
     continuar = "s"
     while (continuar == "s"):
-        registros = objeto_academia.lectura_datos()
+        registros = Estudiantes.lectura_datos_estudiante()
         if(not registros):
-            print("No hay datos en la base de datos. Use la opcion 1 para insertar datos.")
+            print("Error.No hay estudiantes cargados en el sistema. Use la opcion 1 para insertarlos.")
             input("ENTER para continuar.")
             break
         else:
-            print("Estudiantes disponibles")
-            print("ID del/la estudiante || Nombre/s || Apellido/s ||  Fecha de Nacimiento || DNI || Telefono || Domicilio")
-            print("-" * 100)
-            for registro in registros:
-                print(f"{registro[0]}  || {registro[1]} || {registro[2]} || {registro[3]} || {registro[4]} || {registro[5]} || {registro[6]}")
-                print("-" * 100)
-            
+            ver_estudiantes()
             try:
                 id_a_modificar = int(input("Ingrese el id de el/la estudiante a modificar: "))    
+                estudiante_encontrado = Estudiantes.lectura_estudiante_especifico(id_a_modificar)
+                if(estudiante_encontrado and estudiante_encontrado[8] == 'Inactivo/a'):
+                    print("Error. Ya esta dado/a de baja de la carrera.")
 
-                estudiante_encontrado = objeto_academia.lectura_especifica(id_a_modificar)
-                if( not estudiante_encontrado):
+                if(not estudiante_encontrado):
                     print("Error. No hay estudiante con ese id")
-                else:
-                    print(f"La persona con ese id es: {estudiante_encontrado}") 
+
+                if(estudiante_encontrado and estudiante_encontrado[8] == 'Activo/a'):
+                    print(f"Datos de la persona con ese id es: {estudiante_encontrado}")
+
+                    def modificar_datos(mensaje, metodo_validacion):
+                        while(True):
+                            dato = input(mensaje)
+                            dato_validado = metodo_validacion(dato)
+                            if(dato_validado):
+                                return dato_validado
+                            
                     modificar = input("Modificar nombre? s/n: ").lower().strip()
                     if(modificar != "s"):
-                        nombre_ingresado = estudiante_encontrado[1]
+                        nombre = estudiante_encontrado[1]
                     else:
-                        while(True):
-                            nombre = input("Ingrese el/los nuevo/s nombre/s: ")
-                            nombre_ingresado = objeto_academia.validar_apellido(nombre)
-                            if(nombre_ingresado):
-                                print(f"El nombre {nombre} fue ingresado.")
-                                break
-                            
-                    modificar = input("Modificar apellido? s/n: ").lower().strip()
-                    if(modificar !="s"):
-                        apellido_ingresado = estudiante_encontrado[2]
+                        nombre = modificar_datos("Ingrese los nuevos nombres de el/la estudiante: ", Estudiantes.validar_string)
+
+                    modificar = input("Modificar apellidos? s/n: ").lower().strip()
+                    if(modificar != "s"):
+                        apellido = estudiante_encontrado[2]
                     else:
-                        while(True):
-                            apellido = input("Ingrese el/los nuevo/s apellido/s de el/la estudiante: ")
-                            apellido_ingresado = objeto_academia.validar_nombre(apellido)
-                            if(apellido_ingresado):
-                                print(f"El/los apellido/s ingresado/s son {apellido} ")
-                                break
+                        apellido = modificar_datos("Ingrese el/los nuevo/s apellido/s de el/la estudiante: ", Estudiantes.validar_string)
 
                     modificar = input("Modificar fecha de nacimiento? s/n: ").lower().strip()
                     if(modificar != "s"):
-                        fecha_ingresada = estudiante_encontrado[3]
+                        fecha_nacimiento = estudiante_encontrado[3]
                     else:
-                        while (True):
-                            fecha_nacimiento = input("Ingrese la nueva fecha de nacimiento en formato DD-MM-YYYY: ")
-                            fecha_ingresada = objeto_academia.validar_fecha(fecha_nacimiento)
-                            if(fecha_ingresada):
-                                print(f"La fecha de nacimiento {fecha_nacimiento} fue ingresado.")
-                                break
+                        fecha_nacimiento = modificar_datos("Ingrese la nueva fecha de nacimiento de el/la estudiante: ", Estudiantes.validar_fecha)
 
                     modificar = input("Modificar dni? s/n: ").lower().strip()
                     if(modificar != "s"):
-                        dni_ingresado = estudiante_encontrado[4]
+                        dni = estudiante_encontrado[4]
                     else:
-                        while (True):
-                            dni = input("Ingrese el nuevo DNI (Solo numeros): ")
-                            dni_ingresado = objeto_academia.validar_dni_estudiante(dni)
-                            if(dni_ingresado):
-                                print(f"El dni {dni} fue ingresado.")
-                                break
+                        dni = modificar_datos("Ingrese el nuevo dni de el/la estudiante: ", Estudiantes.validar_dni_estudiante)
 
-                    modificar = input("Modificar Telefono? s/n: ").lower().strip()
+                    modificar = input("Modificar telefono? s/n: ").lower().strip()
                     if(modificar != "s"):
-                        telefono_ingresado = estudiante_encontrado[5]
+                        telefono = estudiante_encontrado[5]
                     else:
-                        while(True):
-                            telefono = input("Inserte el nuevo telefono de el/la estudiante: ")
-                            telefono_ingresado = objeto_academia.validar_telefono(telefono)
-                            if(telefono_ingresado):
-                                print(f"El telefono {telefono} ingresado")
-                                break
+                        telefono = modificar_datos("Ingrese el nuevo telefono de el/la estudiante: ", Estudiantes.validar_telefono)
 
-                    modificar = input("Modificar domicilio? s/n: ").lower().strip()
+                    modificar = input("Modificar nombre del domicilio? s/n: ").lower().strip()
                     if(modificar != "s"):
-                        domicilio_ingresado = estudiante_encontrado[6]
+                        domicilio = estudiante_encontrado[6]
                     else:
-                        while(True):
-                            domicilio = input("Inserte el nuevo domicilio de el/la estudiante: ")
-                            domicilio_ingresado = objeto_academia.validar_domicilio(domicilio)
-                            if(domicilio_ingresado):
-                                print(f"El domicilio {domicilio} ingresado")
-                                break
-                    objeto_academia.modificar_datos(id_a_modificar,nombre_ingresado,apellido_ingresado,fecha_ingresada,dni_ingresado,telefono_ingresado,domicilio_ingresado)
+                        domicilio = modificar_datos("Ingrese el nuevo nombre de domicilio de el/la estudiante: ", Estudiantes.validar_domicilio)
+
+                    modificar = input("Modificar numero de domicilio? s/n: ").lower().strip()
+                    if(modificar != "s"):
+                        numero_domicilio = estudiante_encontrado[7]
+                    else:
+                        numero_domicilio = modificar_datos("Ingrese el nuevo numero de domicilio de el/la estudiante: ", Estudiantes.validar_numero_domicilio)
+
+                    
+
+                    print("Datos ingresados")
+                    print(f"Nombre/s: {nombre}")
+                    print(f"Apellido/s: {apellido}")
+                    print(f"Fecha de nacimiento: {fecha_nacimiento}")
+                    print(f"Dni: {dni}")
+                    print(f"Telefono: {telefono}")
+                    print(f"Domicilio: {domicilio + ' ' + numero_domicilio}")
+                    input("ENTER para continuar")
+                    Estudiantes.modificar_estudiante(id_a_modificar,nombre,apellido,fecha_nacimiento,dni,telefono,domicilio,numero_domicilio)
             except ValueError:
                 print("Error. Debe ingresar un numero entero.")
                 
             continuar = input("Seguir buscando y modificando? s/n: ").lower().strip()
 
 def ver_estudiantes():
-    registros = objeto_academia.lectura_datos()
+    registros = Estudiantes.lectura_datos_estudiante()
     if(not registros):
-        print("No hay datos en la base de datos. Use la opcion 1 para insertar datos.")
-        input("ENTER para continuar")
+        print("Error.No hay estudiantes cargados en el sistema. Use la opcion 1 para insertarlos.")
     else:
         print("Tabla de estudiantes")
-        print(f"ID de el/la estudiante || Nombre/s || Apellido/s || Fecha de Nacimiento || DNI || Telefono || Domicilio")
+        print(f"ID de el/la estudiante || Nombre/s || Apellido/s || Fecha de Nacimiento || DNI || Telefono || Domicilio || Estado")
         print("-" * 100)
         for registro in registros:
-            print(f"{registro[0]}  || {registro[1]} || {registro[2]} || {registro[3]} || {registro[4]} || {registro[5]} || {registro[6]}")
+            print(f"{registro[0]}  ||  {registro[1]}  ||  {registro[2]}  ||  {registro[3]}  ||  {registro[4]}  ||  {registro[5]}  ||  {registro[6] + ' '+ registro[7]}  ||  {registro[8]}")
             print("-" * 100)
-        input("ENTER para continuar")
 
-def ver_materias():
-    registros = objeto_academia.ver_materias()
+def lectura_estudiantes_de_baja():
+    registros = Estudiantes.lectura_estudiantes_de_baja()
     if(not registros):
-        print("No hay materias cargadas. Use el menú de materias para cargarlas al sistema.")
-        input("ENTER para continuar")
+        print("Error.No hay estudiantes cargados en el sistema. Use la opcion 1 para insertarlos.")
     else:
-        print("Lista de materias")
-        print("ID de la materia || Nombre de la materia")
-        print("-" * 40) 
+        print("Tabla de estudiantes")
+        print(f"ID de el/la estudiante || Nombre/s || Apellido/s || Fecha de Nacimiento || DNI || Telefono || Domicilio || Estado")
+        print("-" * 100)
         for registro in registros:
-            print(f"     {registro[0]}  ||  {registro[1]}")
-            print("-" * 40) 
-    input("ENTER para continuar")
+            print(f"{registro[0]}  ||  {registro[1]}  ||  {registro[2]}  ||  {registro[3]}  ||  {registro[4]}  ||  {registro[5]}  ||  {registro[6] + ' '+ registro[7]}  ||  {registro[8]}")
+            print("-" * 100)
 
 def ver_materias_con_estudiantes():
-            print("Materias y sus alumnos\n")
-            registros = objeto_academia.ver_materias_con_estudiantes()
-            if(not registros):
-                print("Error. No se han cargado alumnos a materias")
-                input("ENTER para continuar")
-                
-            
-            materias_con_estudiantes = {}
-            for registro in registros:
-                materia = registro[4] 
-                estudiante_info = f"Nombre: {registro[1] + ' ' + registro[2]} || (DNI: {registro[3]})"
-                
-                if materia not in materias_con_estudiantes:
-                    materias_con_estudiantes[materia] = [] 
-                materias_con_estudiantes[materia].append(estudiante_info)
-            
-            for materia, estudiantes in materias_con_estudiantes.items():
-                print(f"\nMateria: {materia}")
-                print("Estudiantes:")
-                for estudiante in estudiantes:
-                    print(f"- {estudiante}")
-            
-            input("ENTER para continuar")
+    print("Materias y sus alumnos\n")
+    registros = Materias.ver_materias_con_estudiantes()
+    if(not registros):
+        print("Error.No hay estudiantes cargados en ninguna materia. Use la opcion 7 para cargarlos.")
+        
+    
+    materias_con_estudiantes = {}
+    for registro in registros:
+        materia = f"{registro[5]} ({registro[7]})" 
+        estudiante_info = f"{registro[0]} || {registro[1] + ' ' + registro[2]} ||  {registro[6]}"
+        
+        if materia not in materias_con_estudiantes:
+            materias_con_estudiantes[materia] = [] 
+        materias_con_estudiantes[materia].append(estudiante_info)
+    
+    for materia, estudiantes in materias_con_estudiantes.items():
+        print(f'''
+Materia: {materia}
+**********************************************************************************************************************************
+Id de la relacion ||  Nombre completo ||  Estado actual en la materia     
+**********************************************************************************************************************************''')   
+        for estudiante in estudiantes:
+            print(f"- {estudiante}")
 
 def insertar_estudiantes_en_materias():
     print("Insertar estudiante en materia")
     continuar = "s"
     while(continuar == "s"):
-        registros = objeto_academia.lectura_datos()
-        materias = objeto_academia.ver_materias()
-        if(not registros or not materias):
-            print("No hay datos en la base de datos. Use la opcion 1 para insertar datos.")
+        estudiantes = Estudiantes.lectura_datos_estudiante()
+        materias = Materias.ver_materias()
+        if(not estudiantes or not materias):
+            print("Error.No hay estudiantes cargados en ninguna materia. Use la opcion 6 para insertarlos.")
             input("ENTER para continuar")
             break
         else:
-            print("Estudiantes disponibles")
-            for registro in registros:
-                print(f"ID de el/la estudiante: {registro[0]}||Estudiante: {registro[1] + ' ' + registro[2]}")
+            print("\nEstudiantes disponibles")
+            for estudiante in estudiantes:
+                print(f"ID de el/la estudiante: {estudiante[0]}||Estudiante: {estudiante[1] + ' ' + estudiante[2]}")
             
             try:
                 id_estudiante = int(input("Ingrese el id de el/la estudiante: "))
-                estudiante_encontrado = objeto_academia.lectura_especifica(id_estudiante)
-                if(not estudiante_encontrado):
-                    print("No hay estudiante con ese id")
-                    input("ENTER para continuar")
+                estudiante_encontrado = Estudiantes.lectura_estudiante_especifico(id_estudiante)
+                if(not estudiante_encontrado or estudiante_encontrado[8] == 'Inactivo/a'):
+                    print("No hay estudiante con ese id o esta inactivo")
                 else:
+                    print("\nMaterias disponibles")
                     for materia in materias:
-                        print(f"ID de la materia: {materia[0]} || Nombre de la materia: {materia[1]}")
+                        print(f"ID de la materia: {materia[0]} || Nombre de la materia: {materia[1]} || Estado actual de la materia: {materia[2]}")
                     
                     id_materia = int(input("Ingrese el id de la materia: "))
-                    materia_encontrada = objeto_academia.ver_materia_especifica(id_materia)
+                    materia_encontrada = Materias.ver_materia_especifica(id_materia)
                     if(not materia_encontrada):
-                        print("No hay materia con ese id.")
-                        input("ENTER para continuar")
-                    if(objeto_academia.ver_materia_y_estudiante_especifico(id_estudiante,id_materia)):
-                        print("Error. Ya se encuentra inscripto/a en la materia.")
-                        input("ENTER para continuar.")
-                    else:
-                        confirmar = input("Confirmar? s/n: ").lower().strip()
-                        if(confirmar != "s"):
+                        print("Error. No hay materia con ese id o está deshabilitada.")
+
+                    if(Materias.ver_materia_y_estudiante_especifico(None,id_estudiante,id_materia)):
+                        print("Error. Ya esta inscripto/a en esa materia.")
+
+                    if(materia_encontrada and not Materias.ver_materia_y_estudiante_especifico(None,id_estudiante,id_materia)):
+                        confirmar = input(f"Insertar a {estudiante_encontrado[1] + ' ' + estudiante_encontrado[2]} en la materia {materia_encontrada[1]}? s/n: ").lower().strip()
+                        if (confirmar != "s"):
                             print("Cancelado.")
                         else:
-                            objeto_academia.insertar_estudiantes_en_materias(id_estudiante,id_materia)
-                            print(f"{estudiante_encontrado[1] + ' '+ estudiante_encontrado[2]} inscripto/a en {materia_encontrada[1]}")
-                            input("ENTER para continuar")
+                            Materias.insertar_estudiantes_en_materias(id_estudiante, id_materia)
+                            print(f"Inserción exitosa.")
+
             except ValueError:
                     print("Error. Inserte un numero entero como id.")
+            continuar = input("\nSeguir insertando alumnos a materias? s/n: ").lower().strip()
 
-                
+def dar_baja_estudiante_en_materia():
+    print("Dar de baja estudiante \n")
+    continuar = "s"
+    while(continuar == "s"):
+        registros = Materias.ver_materias_con_estudiantes()
+        if(not registros):
+            print("Error.No hay estudiantes cargados en ninguna materia. Use la opcion 6 para insertarlos.")
+            input("ENTER para continuar.")
+            break
+        else:
+            ver_materias_con_estudiantes()
 
-        continuar = input("Seguir insertando alumnos a materias? s/n: ").lower().strip()
+            try:
+                id_a_borrar = int(input("\nIngrese el id de la relacion a dar de baja: "))
+                id_encontrado = Materias.ver_materia_y_estudiante_especifico(id_a_borrar,None,None)
+                if(not id_encontrado):
+                    print("Error. No hay relacion con ese id o ya ha sido dada de baja.")
+                if(id_encontrado):
+                    estudiante_encontrado = Estudiantes.lectura_estudiante_especifico(id_encontrado[1])
+                    materia_encontrada = Materias.ver_materia_especifica(id_encontrado[2])
+                    confirmar = input(f"Dar de baja a {estudiante_encontrado[1] + ' ' + estudiante_encontrado[2]} de la materia {materia_encontrada[1]}? s/n: ")
+                    if(confirmar != "s"):
+                        print("Cancelado")
+                    else:
+                        Materias.dar_baja_estudiante_en_materia(id_a_borrar)
+                        print("Se ha dado de baja exitosamente")                    
+            except ValueError:
+                print("Error. Debe ingresar un numero entero.")
+            continuar = input("Seguir buscando y dando de baja? s/n: ").lower().strip()
 
 def menu_ordenamiento():
     menu2 = '''
@@ -344,24 +356,60 @@ def menu_ordenamiento():
             except ValueError:
                 print("Ingrese numeros")
         if(opcion == 1):
-            print("Ordenamiento por apellido")
-            registros = objeto_academia.ordenamiento_por_apellido()
-            for registro in registros:
-                print(f"Nombre completo: {registro[1] + ' ' + registro[0]}")
-            input("ENTER para continuar")
+            registros = Estudiantes.lectura_datos_estudiante()
+            if(not registros):
+                print("Error.No hay estudiantes cargados en el sistema. Use la opcion 1 para insertarlos.")
+                input("ENTER para continuar")
+                break
+            else:       
+                print("Ordenamiento por apellido")
+                print('''
+**********************************************************************************************************
+ID de el/la estudiante || Nombre completo || Fecha de Nacimiento || DNI || Telefono || Domicilio || Estado                 
+**********************************************************************************************************''')
+                estudiantes = Estudiantes.ordenamiento_por_apellido()
+                for estudiante in estudiantes:
+                    print(f"{estudiante[0]} ||  {estudiante[2] + ' ' + estudiante[1]}  ||  {estudiante[3]}  ||  {estudiante[4]}  ||  {estudiante[5]}  ||  {estudiante[6] + ' ' + estudiante[7]}  ||  {estudiante[8]}")
+                    print("-" * 100)
+                input("ENTER para continuar")
 
         if(opcion ==2):
-            print("Ordenamiento por edad (Descendente)")
-            registros = objeto_academia.ordenamiento_por_edad()
-            for registro in registros:
-                print(f"Nombre completo: {registro[0] + ' ' + registro[1]} || Edad: { ((datetime.now() - datetime.strptime(registro[2], '%Y-%m-%d')).days // 365)}")
-            input("ENTER para continuar")
+            registros = Estudiantes.lectura_datos_estudiante()
+            if(not registros):
+                print("Error.No hay estudiantes cargados en el sistema. Use la opcion 1 para insertarlos.")
+                input("ENTER para continuar")
+                break
+            else:       
+                print("Ordenamiento por edad (Descendente)")
+                print('''
+**********************************************************************************************************
+ID de el/la estudiante || Nombre completo || Fecha de nacimiento || Edad || DNI || Telefono || Domicilio || Estado                 
+**********************************************************************************************************''')
+                estudiantes = Estudiantes.ordenamiento_por_edad()
+                for estudiante in estudiantes:
+                    fecha_nacimiento = datetime.strptime(estudiante[3], "%Y-%m-%d")
+                    print(f"{estudiante[0]} ||  {estudiante[2] + ' ' + estudiante[1]}  ||  {estudiante[3]}  ||  {datetime.now().year - fecha_nacimiento.year - ((datetime.now().month, datetime.now().day) < (fecha_nacimiento.month, fecha_nacimiento.day))}||  {estudiante[4]}  ||  {estudiante[5]}  ||  {estudiante[6] + ' ' + estudiante[7]}  ||  {estudiante[8]}")
+                    print("-" * 100)
+                input("ENTER para continuar")
 
         if(opcion == 3):
-            print("Ordenamiento por edad (Ascendente)")
-            registros = objeto_academia.ordenamiento_por_edad()
-            for registro in reversed(registros):
-                print(f"Nombre completo: {registro[0] + ' ' + registro[1]} || Edad: { ((datetime.now() - datetime.strptime(registro[2], '%Y-%m-%d')).days // 365)}")
-            input("ENTER para continuar")
+            registros = Estudiantes.lectura_datos_estudiante()
+            if(not registros):
+                print("Error.No hay estudiantes cargados en el sistema. Use la opcion 1 para insertarlos.")
+                input("ENTER para continuar")
+                break
+            else:       
+                print("Ordenamiento por edad (Ascendente)")
+                print('''
+**********************************************************************************************************
+ID de el/la estudiante || Nombre completo || Fecha de nacimiento || Edad || DNI || Telefono || Domicilio || Estado                 
+**********************************************************************************************************''')
+                estudiantes = Estudiantes.ordenamiento_por_edad()
+                for estudiante in reversed(estudiantes):
+                    fecha_nacimiento = datetime.strptime(estudiante[3], "%Y-%m-%d")
+                    print(f"{estudiante[0]} ||  {estudiante[2] + ' ' + estudiante[1]}  ||  {estudiante[3]}  ||  {datetime.now().year - fecha_nacimiento.year - ((datetime.now().month, datetime.now().day) < (fecha_nacimiento.month, fecha_nacimiento.day))}||  {estudiante[4]}  ||  {estudiante[5]}  ||  {estudiante[6] + ' ' + estudiante[7]}  ||  {estudiante[8]}")
+                    print("-" * 100)
+                input("ENTER para continuar")
+
 
 main()
