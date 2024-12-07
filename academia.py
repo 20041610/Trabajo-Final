@@ -1,7 +1,6 @@
 import sqlite3
 from datetime import datetime
 import re
-#Falta a agregar codigo regional para el numero de telefono
 
 class BaseDeDatos:
     def __init__(self, nombre_bd='ProyectoFinal.db'):
@@ -17,7 +16,6 @@ class BaseDeDatos:
             cursor.execute("PRAGMA foreign_keys = ON")
 
             # Crear tablas
-            #cursor.execute("DROP TABLE IF EXISTS tabla_estudiantes")
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS tabla_estudiantes (
                     id_estudiante INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,7 +29,6 @@ class BaseDeDatos:
                     estado_actual_estudiante VARCHAR(15) DEFAULT "Activo/a"
                 )
             ''')
-            #cursor.execute("DROP TABLE IF EXISTS tabla_materias")
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS tabla_materias (
                     id_materia INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,7 +36,6 @@ class BaseDeDatos:
                     estado_materia VARCHAR(15) DEFAULT 'Habilitada'
                 )
             ''')
-            #cursor.execute("DROP TABLE IF EXISTS estudiantes_materias")
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS estudiantes_materias (
                     id_relacion INTEGER PRIMARY KEY AUTOINCREMENT,
